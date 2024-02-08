@@ -1,1 +1,14 @@
- Nova TODO para ler o arquivo !
+{
+  "todos": [
+    {
+      "date": "2024-02-08T22:54:36.324Z",
+      "content": "-----PRIMEIRO TODO !!!!!------",
+      "done": false
+    },
+    {
+      "date": "2024-02-08T22:54:36.325Z",
+      "content": "Segunda TODO *****",
+      "done": false
+    }
+  ]
+}
