@@ -2,7 +2,7 @@ import fs from 'fs';
 import { v4 as uuid } from 'uuid';
 const DB_FILE_PATH = "./core/db";
 
-console.log("----------------[CRUD]-------------------")
+console.log("-------------------[CRUD]---------------------")
 
 type UUID = string;
 
@@ -95,12 +95,10 @@ create("-----PRIMEIRO TODO !!!!!------");
 const secondTodo = create("Segunda TODO *****");
 const terceiraTodo = create("TERCEIRA TODO *****");
 
-
 deleteById(secondTodo.id)
 //update(terceiraTodo.id, {content: "...............ATUALIZADA ............"})
 
 updateContentById(terceiraTodo.id, "----- Atualizado NOVA -------")
-
 
 const todos = read();
 

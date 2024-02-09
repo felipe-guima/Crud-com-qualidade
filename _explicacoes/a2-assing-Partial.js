@@ -1,7 +1,4 @@
 
-
-Expllicando o Object.assign()
-
 const todo ={
   id: 1,
   content: 'Aprendendo Crud',
