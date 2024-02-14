@@ -39,7 +39,7 @@ function create(content: string): Todo {
 }
 
 // Fail Fast validations
-function read(): Array<Todo> {
+export function read(): Array<Todo> {
   // garantir que caaso não venha um objeto o codigo não quebre
   // talvez tenha string ou não
   const dbString = fs.readFileSync(DB_FILE_PATH, "utf-8");
@@ -106,21 +106,21 @@ function deleteById(id: UUID) {
   );
 }
 
-//Chamadas de Funções
-clearDB();
+//Simulation
+// clearDB();
 
-create("-----PRIMEIRO TODO !!!!!------");
-const secondTodo = create("Segunda TODO *****");
-const terceiraTodo = create("TERCEIRA TODO *****");
+// create("-----PRIMEIRO TODO !!!!!------");
+// const secondTodo = create("Segunda TODO *****");
+// const terceiraTodo = create("TERCEIRA TODO *****");
 
-deleteById(secondTodo.id);
-//update(terceiraTodo.id, {content: "...............ATUALIZADA ............"})
+// deleteById(secondTodo.id);
+// //update(terceiraTodo.id, {content: "...............ATUALIZADA ............"})
 
-updateContentById(terceiraTodo.id, "----- Atualizado NOVA -------");
+// updateContentById(terceiraTodo.id, "----- Atualizado NOVA -------");
 
-const todos = read();
+// const todos = read();
 
-// eslint-disable-next-line no-console
-console.log(todos);
-// eslint-disable-next-line no-console
-console.log(todos.length);
+// // eslint-disable-next-line no-console
+// console.log(todos);
+// // eslint-disable-next-line no-console
+// console.log(todos.length);

@@ -1,10 +1,26 @@
 import React from "react";
 import { GlobalStyles } from "@ui/theme/GlobalStyles";
+import { todoControllerFront } from "@ui/controller/todo";
 const bg = "/bg2.jpeg";
 
 // const bg = "https://mariosouto.com/cursos/crudcomqualidade/bg"
 
+interface HomeTodo {
+  id: string;
+  content: string;
+}
+
 export default function Page() {
+  // variaveis que mudam em react | poderia definir tb como <Array<HomeTodo>>
+  const [todos, setTodos] = React.useState<HomeTodo[]>([]);
+
+  // o useEffect Load infos onload !!! - apenas uma vez !!.
+  React.useEffect(() => {
+    todoControllerFront.get().then((todos) => {
+      setTodos(todos);
+    });
+  }, []);
+
   return (
     <main>
       <GlobalStyles themeName="indigo" />
@@ -42,36 +58,34 @@ export default function Page() {
           </thead>
 
           <tbody>
-            <tr>
-              <td>
-                <input type="checkbox" />
-              </td>
-              <td>d4f26</td>
-              <td>
-                Conteúdo de uma TODO Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Eaque vero facilis obcaecati, autem aliquid
-                eius! Consequatur eaque doloribus laudantium soluta optio odit,
-                provident, ab voluptates doloremque voluptas recusandae
-                aspernatur aperiam.
-              </td>
-              <td align="right">
-                <button data-type="delete">Apagar</button>
-              </td>
-            </tr>
+            {todos.map((currentTodos) => {
+              return (
+                <tr key={currentTodos.id}>
+                  <td>
+                    <input type="checkbox" />
+                  </td>
+                  <td>{currentTodos.id.substring(0, 4)}</td>
+                  <td>{currentTodos.content}</td>
+                  <td align="right">
+                    <button data-type="delete">Apagar</button>
+                  </td>
+                </tr>
+              );
+            })}
 
-            <tr>
+            {/* <tr>
               <td colSpan={4} align="center" style={{ textAlign: "center" }}>
                 Carregando...
               </td>
-            </tr>
+            </tr> */}
 
-            <tr>
+            {/* <tr>
               <td colSpan={4} align="center">
                 Nenhum item encontrado
               </td>
-            </tr>
+            </tr> */}
 
-            <tr>
+            {/* <tr>
               <td colSpan={4} align="center" style={{ textAlign: "center" }}>
                 <button data-type="load-more">
                   Carregar mais{" "}
@@ -86,7 +100,7 @@ export default function Page() {
                   </span>
                 </button>
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </section>
