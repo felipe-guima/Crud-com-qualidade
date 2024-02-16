@@ -11,12 +11,13 @@ interface HomeTodo {
 }
 
 export default function Page() {
+  const [page, setPage] = React.useState(1);
   // variaveis que mudam em react | poderia definir tb como <Array<HomeTodo>>
   const [todos, setTodos] = React.useState<HomeTodo[]>([]);
 
   // o useEffect Load infos onload !!! - apenas uma vez !!.
   React.useEffect(() => {
-    todoControllerFront.get().then((todos) => {
+    todoControllerFront.get({ page }).then(({ todos }) => {
       setTodos(todos);
     });
   }, []);
@@ -85,10 +86,10 @@ export default function Page() {
               </td>
             </tr> */}
 
-            {/* <tr>
+            <tr>
               <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                <button data-type="load-more">
-                  Carregar mais{" "}
+                <button data-type="load-more" onClick={() => setPage(page + 1)}>
+                  Pagina {page}, Carregar mais{" "}
                   <span
                     style={{
                       display: "inline-block",
@@ -100,7 +101,7 @@ export default function Page() {
                   </span>
                 </button>
               </td>
-            </tr> */}
+            </tr>
           </tbody>
         </table>
       </section>
