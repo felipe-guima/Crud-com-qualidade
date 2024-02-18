@@ -11,20 +11,25 @@ interface HomeTodo {
 }
 
 export default function Page() {
+  const [totalPages, setTotalPages] = React.useState(0);
   const [page, setPage] = React.useState(1);
   // variaveis que mudam em react | poderia definir tb como <Array<HomeTodo>>
   const [todos, setTodos] = React.useState<HomeTodo[]>([]);
+  const hasMorePages = totalPages > page;
 
   // o useEffect Load infos onload !!! - apenas uma vez !!.
   React.useEffect(() => {
-    todoControllerFront.get({ page }).then(({ todos }) => {
-      setTodos(todos);
+    todoControllerFront.get({ page }).then(({ todos, pages }) => {
+      setTodos((oldTodos) => {
+        return [...oldTodos, ...todos];
+      });
+      setTotalPages(pages);
     });
-  }, []);
+  }, [page]);
 
   return (
     <main>
-      <GlobalStyles themeName="indigo" />
+      <GlobalStyles themeName="devsoutinho" />
       <header
         style={{
           backgroundImage: `url('${bg}')`,
@@ -86,22 +91,28 @@ export default function Page() {
               </td>
             </tr> */}
 
-            <tr>
-              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                <button data-type="load-more" onClick={() => setPage(page + 1)}>
-                  Pagina {page}, Carregar mais{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginLeft: "4px",
-                      fontSize: "1.2em",
-                    }}
+            {/* Se for true, se houver mais paginas mostra o botão, se não, não mostra nada */}
+            {hasMorePages && (
+              <tr>
+                <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                  <button
+                    data-type="load-more"
+                    onClick={() => setPage(page + 1)}
                   >
-                    ↓
-                  </span>
-                </button>
-              </td>
-            </tr>
+                    Pagina {page}, Carregar mais{" "}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        marginLeft: "4px",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      ↓
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>

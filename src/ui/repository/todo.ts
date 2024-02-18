@@ -1,6 +1,6 @@
 interface TodoRepositoryGetParams {
   page: number;
-  limite: number;
+  limit: number;
 }
 interface TodoRepositoryGetOutput {
   todos: Todo[];
@@ -10,30 +10,29 @@ interface TodoRepositoryGetOutput {
 
 function get({
   page,
-  limite,
+  limit,
 }: TodoRepositoryGetParams): Promise<TodoRepositoryGetOutput> {
-  return fetch("http://localhost:3000/api/todos").then(
-    async (respostaDoServidor) => {
-      const todosString = await respostaDoServidor.text();
-      // Cast não recomendado no Back ex. as Todo[]
-      const todosFromServer = parseTodosFromServer(
-        JSON.parse(todosString)
-      ).todos;
+  return fetch(
+    `http://localhost:3000/api/todos?page=${page}&limit=${limit}`
+  ).then(async (respostaDoServidor) => {
+    const todosString = await respostaDoServidor.text();
+    // Cast não recomendado no Back ex. as Todo[]
+    const responseParsed = parseTodosFromServer(JSON.parse(todosString));
 
-      const ALL_TODOS = todosFromServer;
-      const startIndex = (page - 1) * limite;
-      const endIndex = page * limite;
-      const paginetedTodos = ALL_TODOS.slice(startIndex, endIndex);
-      const totalPages = Math.ceil(ALL_TODOS.length / limite);
+    // a logica de paginação pode ser feita no front, mas é mais comun vir do back
+    // const ALL_TODOS = todosFromServer;
+    // const startIndex = (page - 1) * limite;
+    // const endIndex = page * limite;
+    // const paginetedTodos = ALL_TODOS.slice(startIndex, endIndex);
+    // const totalPages = Math.ceil(ALL_TODOS.length / limite);
 
-      // como garantir que um dado não é any ser fazer o cast
-      return {
-        todos: paginetedTodos,
-        total: ALL_TODOS.length,
-        pages: totalPages,
-      };
-    }
-  );
+    // como garantir que um dado não é any ser fazer o cast
+    return {
+      total: responseParsed.total,
+      todos: responseParsed.todos,
+      pages: responseParsed.pages,
+    };
+  });
 }
 
 export const todoRepository = {
@@ -48,14 +47,22 @@ interface Todo {
   done: boolean;
 }
 
-function parseTodosFromServer(responseBody: unknown): { todos: Array<Todo> } {
+function parseTodosFromServer(responseBody: unknown): {
+  total: number;
+  pages: number;
+  todos: Array<Todo>;
+} {
   if (
     responseBody !== null &&
     typeof responseBody === "object" &&
     "todos" in responseBody &&
+    "total" in responseBody &&
+    "pages" in responseBody &&
     Array.isArray(responseBody.todos)
   ) {
     return {
+      total: Number(responseBody.total),
+      pages: Number(responseBody.pages),
       todos: responseBody.todos.map((todo: unknown) => {
         if (todo == null && typeof todo !== "object") {
           throw new Error("invalid todo from server");
@@ -79,6 +86,8 @@ function parseTodosFromServer(responseBody: unknown): { todos: Array<Todo> } {
   }
 
   return {
+    pages: 1,
+    total: 0,
     todos: [],
   };
 }
